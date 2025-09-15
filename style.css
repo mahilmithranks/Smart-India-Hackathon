@@ -1,0 +1,132 @@
+/* === General Reset === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #f8f9fa, #e3f2fd);
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* === Header === */
+header {
+  background: #1976d2;
+  color: white;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+header button {
+  background: white;
+  color: #1976d2;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 500;
+}
+
+header button:hover {
+  background: #1565c0;
+  color: white;
+}
+
+/* === Dashboard Layout === */
+main {
+  flex: 1;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+/* === Cards === */
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+/* === Map Section === */
+#map {
+  height: 400px;
+  border-radius: 12px;
+}
+
+/* === Alerts === */
+.alert {
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.alert.ok {
+  background: #e8f5e9;
+  color: #388e3c;
+}
+
+.alert.warning {
+  background: #fff8e1;
+  color: #fbc02d;
+}
+
+.alert.critical {
+  background: #ffebee;
+  color: #d32f2f;
+}
+
+/* === Status Badges === */
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.low {
+  background: #c8e6c9;
+  color: #2e7d32;
+}
+
+.medium {
+  background: #fff59d;
+  color: #f57f17;
+}
+
+.high {
+  background: #ffcdd2;
+  color: #c62828;
+}
+
+/* === Responsive === */
+@media (max-width: 900px) {
+  main {
+    grid-template-columns: 1fr;
+  }
+}
