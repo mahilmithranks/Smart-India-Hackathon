@@ -1,109 +1,59 @@
-// Initialize Map
-const map = L.map("map").setView([12.9716, 77.5946], 14);
-
-// Tile Layer
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  attribution: "© OpenStreetMap contributors",
-}).addTo(map);
-
+// ---------- Dummy Bin Data ----------
 let bins = [
-  { id: "B-101", lat: 12.975, lng: 77.595, fill: 85 },
-  { id: "B-102", lat: 12.969, lng: 77.59, fill: 45 },
-  { id: "B-103", lat: 12.968, lng: 77.598, fill: 62 },
-  { id: "B-104", lat: 12.972, lng: 77.592, fill: 28 },
-  { id: "B-105", lat: 12.974, lng: 77.596, fill: 92 },
+    { id: 'B-101', lat: 12.9716, lng: 77.5946, level: 85, status: 'To Be Cleaned' },
+    { id: 'B-102', lat: 12.9726, lng: 77.5956, level: 40, status: 'Normal' },
+    { id: 'B-103', lat: 12.9736, lng: 77.5936, level: 70, status: 'Cleaning Now' },
+    { id: 'B-104', lat: 12.9746, lng: 77.5926, level: 0, status: 'Cleaned' }
 ];
 
-const markers = [];
+// ---------- Initialize Map ----------
+const map = L.map('map').setView([12.9716, 77.5946], 15);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
 
-// Function to create bins
-function createBin(bin) {
-  const color = bin.fill > 80 ? "red" : bin.fill > 50 ? "orange" : "green";
-
-  const circle = L.circleMarker([bin.lat, bin.lng], {
-    radius: 10,
-    color: color,
-    fillColor: color,
-    fillOpacity: 0.7,
-    weight: 2,
-  }).addTo(map);
-
-  // Hover effect
-  circle.on("mouseover", function () {
-    this.setStyle({ radius: 14, fillOpacity: 1 });
-  });
-  circle.on("mouseout", function () {
-    this.setStyle({ radius: 10, fillOpacity: 0.7 });
-  });
-
-  circle.bindPopup(`<b>${bin.id}</b><br>Fill: ${bin.fill}%`);
-  markers.push(circle);
-}
-
-// Render bins
-bins.forEach(createBin);
-
-// Alerts + Recent
-function updateSidebar() {
-  const alertsList = document.getElementById("alertsList");
-  const recentList = document.getElementById("recentList");
-
-  alertsList.innerHTML = "";
-  recentList.innerHTML = "";
-
-  bins.forEach((bin) => {
-    // Alerts
-    if (bin.fill > 80) {
-      const alertDiv = document.createElement("div");
-      alertDiv.className = "alert-item";
-      alertDiv.innerHTML = `
-        <span><b>${bin.id}</b> — ${bin.fill}%</span>
-        <button>Dispatch</button>
-      `;
-      alertsList.appendChild(alertDiv);
+// ---------- Map Markers ----------
+bins.forEach(bin => {
+    let color;
+    switch(bin.status) {
+        case 'To Be Cleaned': color = 'red'; break;
+        case 'Cleaning Now': color = 'orange'; break;
+        case 'Cleaned': color = 'green'; break;
+        default: color = 'blue';
     }
 
-    // Recent
-    const li = document.createElement("li");
-    li.textContent = `${bin.id} — ${bin.fill}% (${new Date().toLocaleTimeString()})`;
-    recentList.appendChild(li);
-  });
-}
+    const marker = L.circleMarker([bin.lat, bin.lng], {
+        color: color,
+        radius: 10,
+        fillOpacity: 0.8
+    }).addTo(map);
 
-updateSidebar();
-
-// Chart
-const ctx = document.getElementById("binChart").getContext("2d");
-new Chart(ctx, {
-  type: "line",
-  data: {
-    labels: ["-6d", "-5d", "-4d", "-3d", "-2d", "-1d", "Today"],
-    datasets: [
-      {
-        label: "Average Fill Level (%)",
-        data: [65, 72, 68, 64, 60, 58, 62],
-        borderColor: "#2563eb",
-        backgroundColor: "rgba(37, 99, 235, 0.2)",
-        tension: 0.3,
-        fill: true,
-      },
-    ],
-  },
-  options: {
-    responsive: true,
-    plugins: { legend: { display: false } },
-  },
+    marker.bindPopup(`<b>${bin.id}</b><br>Level: ${bin.level}%<br>Status: ${bin.status}`);
 });
 
-// Simulate live data
-document.getElementById("simulateBtn").addEventListener("click", () => {
-  bins = bins.map((bin) => ({
-    ...bin,
-    fill: Math.min(100, Math.max(0, bin.fill + (Math.random() * 20 - 10))),
-  }));
+// ---------- Populate Table ----------
+const tableBody = document.querySelector('#binTable tbody');
+tableBody.innerHTML = '';
 
-  markers.forEach((m) => m.remove());
-  markers.length = 0;
-  bins.forEach(createBin);
-  updateSidebar();
+bins.forEach(bin => {
+    const row = document.createElement('tr');
+    let statusColor;
+    switch(bin.status) {
+        case 'To Be Cleaned': statusColor = 'red'; break;
+        case 'Cleaning Now': statusColor = 'orange'; break;
+        case 'Cleaned': statusColor = 'green'; break;
+        default: statusColor = '#f0f0f0';
+    }
+
+    // Determine what to show in "Actions"
+    let actionText = '';
+    if (bin.status === 'To Be Cleaned') actionText = 'To Be Cleaned';
+    else if (bin.status === 'Cleaned') actionText = 'Already Cleaned';
+    else actionText = '-'; // for normal or cleaning now
+
+    row.innerHTML = `
+        <td>${bin.id}</td>
+        <td>${bin.level}</td>
+        <td style="color:${statusColor}; font-weight:bold">${bin.status}</td>
+        <td style="color:${statusColor}; font-weight:bold">${actionText}</td>
+    `;
+    tableBody.appendChild(row);
 });
