@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SIH Bin Monitoring</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Custom CSS for 3D & hover effects -->
+  <style>
+    /* 3D text effect */
+    .drop-shadow-3d {
+      text-shadow:
+        1px 1px 0 #000,
+        2px 2px 0 #000,
+        3px 3px 0 #000;
+    }
+
+    /* Navbar hover glow */
+    .nav-link {
+      color: white;
+      text-shadow: 1px 1px 2px #000;
+      transition: all 0.3s ease;
+    }
+    .nav-link:hover {
+      transform: translateY(-2px);
+      color: #34d399; /* Tailwind green-400 */
+      text-shadow: 2px 2px 5px #34d399;
+    }
+
+    /* Live status & history badges hover glow */
+    .badge-hover {
+      transition: all 0.3s ease;
+    }
+    .badge-hover:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 10px rgba(255,255,255,0.7);
+    }
+
+    /* Map popup headings */
+    .popup-heading {
+      color: white;
+      text-shadow: 1px 1px 2px #000;
+    }
+
+    /* Footer text */
+    footer {
+      color: white;
+      text-shadow: 1px 1px 2px #000;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white flex flex-col h-screen">
+
+  <!-- Navbar -->
+  <nav class="bg-gray-800 p-4 flex justify-between">
+    <h1 class="text-xl font-bold text-white drop-shadow-3d">Smart Bin Monitoring</h1>
+    <ul class="flex space-x-4">
+      <li><a href="#" onclick="showTab('home')" class="nav-link">Home</a></li>
+      <li><a href="#" onclick="showTab('analyze')" class="nav-link">Analyze</a></li>
+    </ul>
+  </nav>
+
+  <!-- Live Status Panel -->
+  <div id="liveStatus" class="bg-gray-700 p-4 flex flex-wrap gap-4 overflow-x-auto">
+    <!-- Status badges for bins will be inserted here dynamically -->
+  </div>
+
+  <!-- Home Page (Map) -->
+  <div id="home" class="flex-1 p-4">
+    <div id="map" class="w-full h-full rounded-lg shadow-lg"></div>
+  </div>
+
+  <!-- Analyze Page -->
+  <div id="analyze" class="hidden p-4 flex flex-col h-full">
+    <h2 class="text-4xl font-extrabold mb-4 text-white drop-shadow-3d">
+      Analysis Dashboard
+    </h2>
+    <p class="text-gray-300 mb-6">Graphs, bin stats, etc.</p>
+
+    <div class="flex flex-col lg:flex-row gap-6 flex-1 overflow-hidden">
+
+      <!-- Graph Section -->
+      <div class="bg-gray-800 p-4 rounded-lg flex-1 shadow-lg">
+        <h3 class="text-2xl font-bold mb-2 text-white drop-shadow-3d">Bin Fill Levels</h3>
+        <canvas id="binChart" class="w-full h-64"></canvas>
+      </div>
+
+      <!-- History Section -->
+      <div class="bg-gray-800 p-4 rounded-lg flex-1 shadow-lg flex flex-col">
+        <h3 class="text-2xl font-bold mb-2 text-white drop-shadow-3d">Cleaning History</h3>
+        <ul id="historyList" class="flex-1 overflow-auto space-y-2 text-gray-200">
+          <!-- Dynamic history items will go here -->
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 p-3 text-center text-sm">
+    © 2025 All Rights Reserved
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    function showTab(tab) {
+      document.getElementById('home').classList.add('hidden');
+      document.getElementById('analyze').classList.add('hidden');
+      document.getElementById(tab).classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
