@@ -7,7 +7,7 @@ function Navbar() {
       <h2 className="text-xl font-bold text-white">Smart Bin Management</h2>
       <div className="space-x-6">
         <Link to="/" className="text-gray-300 hover:text-white">Home</Link>
-        {/* <Link to="/current" className="text-gray-300 hover:text-white">Current Data</Link> */}
+        <Link to="/current" className="text-gray-300 hover:text-white">Current Data</Link>
         <Link to="/live" className="text-gray-300 hover:text-white">Live Data</Link>
         <Link to="/feedback" className="text-gray-300 hover:text-white">Feedback</Link>
       </div>
